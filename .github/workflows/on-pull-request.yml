@@ -1,0 +1,41 @@
+name: Run tests
+
+on:
+  pull_request:
+
+env:
+  AZURE_FUNCTIONAPP_NAME: bc-totorobot-py   # Application name
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'  # Path to the web app project
+  PYTHON_VERSION: '3.8'                # Python version to use (supports 3.6, 3.7, 3.8)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
+    
+    - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install pip dependencies for testing
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        popd
+
+    - name: Test with pytest
+      run: |
+        export CAMPFIRE_ROOM=""
+        export MAILCHIMP_API_KEY=""
+        export MAILCHIMP_LIST_ID=""
+        python -m pytest
+
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        flake8 .

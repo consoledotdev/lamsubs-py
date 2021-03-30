@@ -1,0 +1,79 @@
+name: Run tests and deploy to Azure
+
+on:
+    push:
+        branches:
+            - main
+            
+    workflow_dispatch:
+
+env:
+  AZURE_FUNCTIONAPP_NAME: bc-totorobot-py
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  PYTHON_VERSION: '3.8'
+
+jobs:
+    test-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout GitHub Action
+              uses: actions/checkout@v2
+
+            - name: Login via Azure CLI
+              uses: azure/login@v1
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
+              uses: actions/setup-python@v2
+              with:
+                  python-version: ${{ env.PYTHON_VERSION }}
+
+            - name: Install pip dependencies for testing
+              shell: bash
+              run: |
+                  pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+                  popd
+
+            - name: Test with pytest
+              run: |
+                  export CAMPFIRE_ROOM=""
+                  export MAILCHIMP_API_KEY=""
+                  export MAILCHIMP_LIST_ID=""
+                  python -m pytest
+
+            - name: Lint with flake8
+              run: |
+                  pip install flake8
+                  flake8 .
+
+            - name: Install pip dependencies for deployment
+              shell: bash
+              run: |
+                  pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+                  popd
+
+            - name: Setup Bicep
+              uses: anthony-c-martin/setup-bicep@v0.1
+
+            - name: Build Bicep
+              run: bicep build main.bicep
+
+            - uses: azure/arm-deploy@v1
+              with:
+                  subscriptionId: 244fa449-6833-417a-9b8e-be5a66bdf344
+                  resourceGroupName: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+                  template: ./main.json
+                  parameters: campfireRoom=${{ secrets.CAMPFIRE_ROOM }} mailchimpApiKey=${{ secrets.MAILCHIMP_API_KEY }} mailchimpListId=${{ secrets.MAILCHIMP_LIST_ID }}
+
+            - name: 'Deploy Azure Function'
+              uses: Azure/functions-action@v1
+              id: fa
+              with:
+                  app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+                  package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+                  publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
