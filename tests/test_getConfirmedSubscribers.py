@@ -3,7 +3,6 @@
 
 # System
 import json
-import os
 import unittest
 import unittest.mock
 
@@ -50,7 +49,6 @@ class TestGetStats(unittest.TestCase):
                 'text': str(confirmedSubscribers)
             }]
         })
-
 
         # Check the output
         self.assertEqual(resp.status_code, 200)
