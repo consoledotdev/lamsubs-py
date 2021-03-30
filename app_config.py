@@ -2,18 +2,7 @@ import logging
 import os
 import sys
 
-if 'PRODUCTION' in os.environ:
-    logging.info('config PROD')
-else:
-    logging.info('config TEST')
-
 # Get configs from environment variables
-if 'CAMPFIRE_ROOM' in os.environ:
-    CAMPFIRE_ROOM = os.environ['CAMPFIRE_ROOM']
-else:
-    logging.error('envar CAMPFIRE_ROOM not set')
-    sys.exit(1)
-
 if 'MAILCHIMP_API_KEY' in os.environ:
     MAILCHIMP_API_KEY = os.environ['MAILCHIMP_API_KEY']
 else:

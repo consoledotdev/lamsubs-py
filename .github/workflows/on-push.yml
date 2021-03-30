@@ -4,11 +4,11 @@ on:
     push:
         branches:
             - main
-            
+
     workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_NAME: bc-totorobot-py
+  AZURE_FUNCTIONAPP_NAME: lamsubs-py
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
   PYTHON_VERSION: '3.8'
 
@@ -39,7 +39,6 @@ jobs:
 
             - name: Test with pytest
               run: |
-                  export CAMPFIRE_ROOM=""
                   export MAILCHIMP_API_KEY=""
                   export MAILCHIMP_LIST_ID=""
                   python -m pytest
@@ -68,7 +67,7 @@ jobs:
                   subscriptionId: 244fa449-6833-417a-9b8e-be5a66bdf344
                   resourceGroupName: ${{ env.AZURE_FUNCTIONAPP_NAME }}
                   template: ./main.json
-                  parameters: campfireRoom=${{ secrets.CAMPFIRE_ROOM }} mailchimpApiKey=${{ secrets.MAILCHIMP_API_KEY }} mailchimpListId=${{ secrets.MAILCHIMP_LIST_ID }}
+                  parameters: mailchimpApiKey=${{ secrets.MAILCHIMP_API_KEY }} mailchimpListId=${{ secrets.MAILCHIMP_LIST_ID }}
 
             - name: 'Deploy Azure Function'
               uses: Azure/functions-action@v1

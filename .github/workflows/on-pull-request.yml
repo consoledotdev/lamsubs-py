@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  AZURE_FUNCTIONAPP_NAME: bc-totorobot-py   # Application name
+  AZURE_FUNCTIONAPP_NAME: lamsubs-py   # Application name
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'  # Path to the web app project
   PYTHON_VERSION: '3.8'                # Python version to use (supports 3.6, 3.7, 3.8)
 
@@ -14,7 +14,7 @@ jobs:
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v2
-    
+
     - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
       uses: actions/setup-python@v2
       with:
@@ -30,7 +30,6 @@ jobs:
 
     - name: Test with pytest
       run: |
-        export CAMPFIRE_ROOM=""
         export MAILCHIMP_API_KEY=""
         export MAILCHIMP_LIST_ID=""
         python -m pytest

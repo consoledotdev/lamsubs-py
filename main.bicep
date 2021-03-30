@@ -5,13 +5,12 @@
 //
 // Based on: https://github.com/Azure/bicep/tree/2d1f43e57ccfbc117e0d6a9709e0b71377e9a83b/docs/examples/101/function-app-create
 
-param campfireRoom string
 param mailchimpApiKey string
 param mailchimpListId string
 
 param location string = resourceGroup().location
 
-var appName = 'bc-totorobot-py'
+var appName = 'lamsubs-py'
 param functionRuntime string = 'python'
 
 // remove dashes for storage account name
@@ -148,14 +147,6 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
           value: '~3'
-        }
-        {
-          name: 'PRODUCTION'
-          value: 'true'
-        }
-        {
-          name: 'CAMPFIRE_ROOM'
-          value: campfireRoom
         }
         {
           name: 'MAILCHIMP_API_KEY'
