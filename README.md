@@ -70,7 +70,7 @@ func host start
 ### Trigger timer function
 
 ```zsh
-curl -i -X POST -H "Content-Type:application/json" -d "{}" http://localhost:7071/admin/functions/getConfirmedSubscribers
+curl -i http://localhost:7071/api/getConfirmedSubscribers
 ```
 
 ### Tests
