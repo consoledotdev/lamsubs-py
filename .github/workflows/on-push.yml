@@ -62,7 +62,7 @@ jobs:
             - name: Build Bicep
               run: bicep build main.bicep
 
-            - uses: azure/arm-deploy@v1
+            - uses: azure/arm-deploy@1.0.3
               with:
                   subscriptionId: 244fa449-6833-417a-9b8e-be5a66bdf344
                   resourceGroupName: ${{ env.AZURE_FUNCTIONAPP_NAME }}
