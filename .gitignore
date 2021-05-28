@@ -129,7 +129,6 @@ main.json
 
 .python_packages
 
-.vscode
 
 # Azurite
 __blobstorage__
